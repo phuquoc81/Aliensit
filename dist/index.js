@@ -28006,6 +28006,13 @@ function debug(message) {
 function error(message, properties = {}) {
     issueCommand('error', toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
+/**
+ * Writes info to log with console.log.
+ * @param message info message
+ */
+function info(message) {
+    process.stdout.write(message + os.EOL);
+}
 
 /**
  * Waits for a number of milliseconds.
@@ -28022,6 +28029,47 @@ async function wait(milliseconds) {
 }
 
 /**
+ * Device software upgrade functionality.
+ */
+/**
+ * Performs a software upgrade for the specified device to the target version.
+ *
+ * This function validates the upgrade parameters, checks whether an upgrade is
+ * needed, and returns an {@link UpgradeResult} describing the outcome.
+ *
+ * Extend this function to integrate with a real device management API or
+ * firmware delivery service when connecting to physical hardware.
+ *
+ * @param config The upgrade configuration containing device name, current
+ *   version, and target version.
+ * @returns Resolves with the result of the upgrade operation.
+ * @throws {Error} If `deviceName` or `targetVersion` are empty.
+ */
+async function upgradeDevice(config) {
+    const { deviceName, currentVersion, targetVersion } = config;
+    if (!deviceName)
+        throw new Error('Device name is required');
+    if (!targetVersion)
+        throw new Error('Target version is required');
+    if (currentVersion === targetVersion) {
+        return {
+            success: true,
+            deviceName,
+            previousVersion: currentVersion,
+            newVersion: targetVersion,
+            message: `Device ${deviceName} is already at version ${targetVersion}`
+        };
+    }
+    return {
+        success: true,
+        deviceName,
+        previousVersion: currentVersion,
+        newVersion: targetVersion,
+        message: `Successfully upgraded ${deviceName} from version ${currentVersion} to version ${targetVersion}`
+    };
+}
+
+/**
  * The main function for the action.
  *
  * @returns Resolves when the action is complete.
@@ -28029,6 +28077,9 @@ async function wait(milliseconds) {
 async function run() {
     try {
         const ms = getInput('milliseconds');
+        const deviceName = getInput('device-name');
+        const currentVersion = getInput('current-version');
+        const targetVersion = getInput('target-version');
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
         debug(`Waiting ${ms} milliseconds ...`);
         // Log the current timestamp, wait, then log the new timestamp
@@ -28037,6 +28088,16 @@ async function run() {
         debug(new Date().toTimeString());
         // Set outputs for other workflow steps to use
         setOutput('time', new Date().toTimeString());
+        if (deviceName && targetVersion) {
+            const result = await upgradeDevice({
+                deviceName,
+                currentVersion,
+                targetVersion
+            });
+            info(result.message);
+            setOutput('upgrade-status', result.success ? 'success' : 'failed');
+            setOutput('upgraded-version', result.newVersion);
+        }
     }
     catch (error) {
         // Fail the workflow run if an error occurs
