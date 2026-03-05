@@ -14,6 +14,24 @@ publishing, and versioning guidance.
 If you are new, there's also a simpler introduction in the
 [Hello world JavaScript action repository](https://github.com/actions/hello-world-javascript-action).
 
+## `phu_ai` — Quantum ZX Core Module
+
+The repository also ships a companion Rust crate located in the [`phu_ai/`](./phu_ai/) directory.  It implements a **quantum ZX core AI** that exposes the following capabilities through placeholder / mock functions (real back-ends can be plugged in later):
+
+| Function | Signature | Description |
+|---|---|---|
+| Quantum puzzle solver | `solve_quantum_puzzle(input: &str) -> String` | Solves highly complex quantum puzzles using ZX-calculus rewriting. |
+| Physics math engine | `calculate_physics(equation: &str) -> String` | Evaluates advanced physics equations via tensor-network simulation. |
+| Space-travel planner | `compute_space_travel(destination: &str, speed_fraction: f64) -> String` | Computes relativistic trajectories (Lorentz factor, proper time) for interstellar missions. |
+| Future predictor | `predict_future(years: u32) -> String` | Forecasts civilization states up to **100,000 years** ahead using probabilistic simulation. |
+
+### Building and testing the `phu_ai` crate
+
+```bash
+cd phu_ai
+cargo test
+```
+
 ## Create Your Own Action
 
 To create your own action, you can use this repository as a template! Just
