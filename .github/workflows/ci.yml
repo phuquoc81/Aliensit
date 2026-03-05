@@ -32,12 +32,18 @@ jobs:
         id: npm-ci
         run: npm ci
 
+      - name: Audit Dependencies
+        id: npm-audit
+        # Fail the build if any high or critical severity vulnerabilities are found
+        run: npm audit --audit-level=high
+
       - name: Check Format
         id: npm-format-check
         run: npm run format:check
 
       - name: Lint
         id: npm-lint
+        # Runs ESLint including eslint-plugin-security for security issue detection
         run: npm run lint
 
       - name: Test
