@@ -6,6 +6,7 @@ import typescriptEslint from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
 import jest from 'eslint-plugin-jest'
 import prettier from 'eslint-plugin-prettier'
+import security from 'eslint-plugin-security'
 import globals from 'globals'
 
 const compat = new FlatCompat({
@@ -25,11 +26,13 @@ export default [
     'plugin:jest/recommended',
     'plugin:prettier/recommended'
   ),
+  security.configs.recommended,
   {
     plugins: {
       jest,
       prettier,
-      '@typescript-eslint': typescriptEslint
+      '@typescript-eslint': typescriptEslint,
+      security
     },
 
     languageOptions: {
