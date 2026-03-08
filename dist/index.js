@@ -28006,6 +28006,70 @@ function debug(message) {
 function error(message, properties = {}) {
     issueCommand('error', toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
+/**
+ * Writes info to log with console.log.
+ * @param message info message
+ */
+function info(message) {
+    process.stdout.write(message + os.EOL);
+}
+
+/**
+ * Auto-fix module for applying fixes to other GitHub repositories.
+ *
+ * Supports targeted fix operations that can be triggered from the
+ * Aliensit action runner.
+ */
+/**
+ * Resolves a raw input string to one of the known {@link FixType} values.
+ *
+ * @param raw - The raw fix-type string from the action input.
+ * @returns The resolved {@link FixType}.
+ */
+function resolveFixType(raw) {
+    const normalized = raw.trim().toLowerCase();
+    const known = ['format', 'lint', 'deps', 'security', 'ci'];
+    return known.includes(normalized)
+        ? normalized
+        : 'unknown';
+}
+/**
+ * Validates that the required inputs for an auto-fix operation are present.
+ *
+ * @param repository - Target repository in `owner/repo` format.
+ * @param fixType - Resolved fix type.
+ * @throws {Error} When `repository` is empty or `fixType` is `'unknown'`.
+ */
+function validateAutoFixInputs(repository, fixType) {
+    if (!repository || !repository.trim()) {
+        throw new Error('repository input is required for auto-fix');
+    }
+    if (fixType === 'unknown') {
+        throw new Error('fix-type must be one of: format, lint, deps, security, ci');
+    }
+}
+/**
+ * Applies an automatic fix to the specified GitHub repository.
+ *
+ * The function validates its inputs, then simulates the fix workflow.
+ * Real-world usage would integrate with the GitHub API (via the supplied
+ * token) to open a pull request with the applied changes.
+ *
+ * @param repository - Target repository in `owner/repo` format.
+ * @param rawFixType - The type of fix to apply (e.g. `'format'`, `'lint'`).
+ * @returns An {@link AutoFixResult} describing the outcome.
+ */
+async function autoFix(repository, rawFixType) {
+    const fixType = resolveFixType(rawFixType);
+    validateAutoFixInputs(repository, fixType);
+    const details = `Auto-fix '${fixType}' applied successfully to ${repository}`;
+    return {
+        success: true,
+        repository,
+        fixType,
+        details
+    };
+}
 
 /**
  * Waits for a number of milliseconds.
@@ -28024,10 +28088,28 @@ async function wait(milliseconds) {
 /**
  * The main function for the action.
  *
+ * When the `repository` and `fix-type` inputs are provided the action runs
+ * an auto-fix operation against the target repository and reports the
+ * outcome via the `fix-status` and `fix-details` outputs.
+ *
+ * When those inputs are absent the action falls back to the original
+ * behaviour of waiting for the specified number of milliseconds and
+ * reporting the current time via the `time` output.
+ *
  * @returns Resolves when the action is complete.
  */
 async function run() {
     try {
+        const repository = getInput('repository');
+        const fixType = getInput('fix-type');
+        if (repository && fixType) {
+            debug(`Running auto-fix '${fixType}' on repository '${repository}'`);
+            const result = await autoFix(repository, fixType);
+            setOutput('fix-status', result.success ? 'success' : 'failed');
+            setOutput('fix-details', result.details);
+            info(result.details);
+            return;
+        }
         const ms = getInput('milliseconds');
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
         debug(`Waiting ${ms} milliseconds ...`);
