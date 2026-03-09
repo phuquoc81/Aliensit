@@ -1,4 +1,4 @@
-# Create a GitHub Action Using TypeScript
+# Phu AI Platform Upgrade Action
 
 ![Linter](https://github.com/actions/typescript-action/actions/workflows/linter.yml/badge.svg)
 ![CI](https://github.com/actions/typescript-action/actions/workflows/ci.yml/badge.svg)
@@ -6,7 +6,8 @@
 ![CodeQL](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml/badge.svg)
 ![Coverage](./badges/coverage.svg)
 
-Use this template to bootstrap the creation of a TypeScript action. :rocket:
+Prepare a normalized Phu AI platform software upgrade plan for AI engines and
+wireless smartdevices. :rocket:
 
 This template includes compilation support, tests, a validation workflow,
 publishing, and versioning guidance.
@@ -194,11 +195,16 @@ steps:
     id: test-action
     uses: ./
     with:
-      milliseconds: 1000
+      ai-engines: |
+        vision sync
+        neural repair
+      wireless-smartdevices: |
+        phuhanddevice 81
+        home hub
 
   - name: Print Output
     id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
+    run: echo "${{ steps.test-action.outputs.summary }}"
 ```
 
 For example workflow runs, check out the
@@ -225,11 +231,20 @@ steps:
     id: test-action
     uses: actions/typescript-action@v1 # Commit with the `v1` tag
     with:
-      milliseconds: 1000
+      ai-engines: |
+        vision sync
+        neural repair
+      software-version: 5864.14000.28000.100000000⅛
+      support-profile: phu quoc nguyen human body brain
+      wireless-smartdevices: |
+        phuhanddevice 81
+        home hub
 
   - name: Print Output
     id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
+    run: |
+      echo "${{ steps.test-action.outputs.software-version }}"
+      echo "${{ steps.test-action.outputs.summary }}"
 ```
 
 ## Publishing a New Release
