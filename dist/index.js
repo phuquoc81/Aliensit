@@ -28006,19 +28006,71 @@ function debug(message) {
 function error(message, properties = {}) {
     issueCommand('error', toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
-
 /**
- * Waits for a number of milliseconds.
- *
- * @param milliseconds The number of milliseconds to wait.
- * @returns Resolves with 'done!' after the wait is over.
+ * Writes info to log with console.log.
+ * @param message info message
  */
-async function wait(milliseconds) {
-    return new Promise((resolve) => {
-        if (isNaN(milliseconds))
-            throw new Error('milliseconds is not a number');
-        setTimeout(() => resolve('done!'), milliseconds);
-    });
+function info(message) {
+    process.stdout.write(message + os.EOL);
+}
+
+const DEFAULT_PLATFORM_NAME = 'phu ai platform';
+const DEFAULT_SOFTWARE_VERSION = '5864.14000.28000.100000000⅛';
+const DEFAULT_SUPPORT_PROFILE = 'phu quoc nguyen human body brain';
+const DEFAULT_WIRELESS_SMARTDEVICES = 'phuhanddevice 81';
+/**
+ * Parses a newline or comma separated list into unique trimmed items.
+ *
+ * @param value Raw list input.
+ * @returns Unique list entries in their original order.
+ */
+function parseUniqueItems(value) {
+    const seen = new Set();
+    const items = [];
+    for (const item of value.split(/[,\n]/)) {
+        const trimmedItem = item.trim();
+        if (!trimmedItem)
+            continue;
+        const normalizedItem = trimmedItem.toLowerCase();
+        if (seen.has(normalizedItem))
+            continue;
+        seen.add(normalizedItem);
+        items.push(trimmedItem);
+    }
+    return items;
+}
+/**
+ * Builds a normalized upgrade plan for the Phu AI platform.
+ *
+ * @param input Action inputs.
+ * @returns Normalized upgrade plan values.
+ */
+function buildUpgradePlan(input) {
+    const platformName = input.platformName.trim();
+    const softwareVersion = input.softwareVersion.trim();
+    const supportProfile = input.supportProfile.trim();
+    const aiEngines = parseUniqueItems(input.aiEngines);
+    const wirelessSmartdevices = parseUniqueItems(input.wirelessSmartdevices);
+    if (!platformName)
+        throw new Error('platform-name is required');
+    if (!softwareVersion)
+        throw new Error('software-version is required');
+    if (!supportProfile)
+        throw new Error('support-profile is required');
+    if (aiEngines.length === 0) {
+        throw new Error('ai-engines must include at least one engine');
+    }
+    if (wirelessSmartdevices.length === 0) {
+        throw new Error('wireless-smartdevices must include at least one target device');
+    }
+    return {
+        platformName,
+        softwareVersion,
+        supportProfile,
+        aiEngines,
+        wirelessSmartdevices,
+        summary: `Prepared ${aiEngines.length} AI engine(s) and ${wirelessSmartdevices.length} wireless smartdevice target(s) for ${supportProfile} on ${platformName} version ${softwareVersion}.`
+    };
 }
 
 /**
@@ -28028,15 +28080,22 @@ async function wait(milliseconds) {
  */
 async function run() {
     try {
-        const ms = getInput('milliseconds');
-        // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-        debug(`Waiting ${ms} milliseconds ...`);
-        // Log the current timestamp, wait, then log the new timestamp
-        debug(new Date().toTimeString());
-        await wait(parseInt(ms, 10));
-        debug(new Date().toTimeString());
-        // Set outputs for other workflow steps to use
-        setOutput('time', new Date().toTimeString());
+        const plan = buildUpgradePlan({
+            aiEngines: getInput('ai-engines'),
+            platformName: getInput('platform-name') || DEFAULT_PLATFORM_NAME,
+            softwareVersion: getInput('software-version') || DEFAULT_SOFTWARE_VERSION,
+            supportProfile: getInput('support-profile') || DEFAULT_SUPPORT_PROFILE,
+            wirelessSmartdevices: getInput('wireless-smartdevices') || DEFAULT_WIRELESS_SMARTDEVICES
+        });
+        info(plan.summary);
+        debug(`AI engines: ${plan.aiEngines.join(', ')}`);
+        debug(`Wireless smartdevices: ${plan.wirelessSmartdevices.join(', ')}`);
+        setOutput('platform-name', plan.platformName);
+        setOutput('software-version', plan.softwareVersion);
+        setOutput('support-profile', plan.supportProfile);
+        setOutput('ai-engines', plan.aiEngines.join(', '));
+        setOutput('wireless-smartdevices', plan.wirelessSmartdevices.join(', '));
+        setOutput('summary', plan.summary);
     }
     catch (error) {
         // Fail the workflow run if an error occurs

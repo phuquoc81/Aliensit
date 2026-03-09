@@ -7,11 +7,9 @@
  */
 import { jest } from '@jest/globals'
 import * as core from '../__fixtures__/core.js'
-import { wait } from '../__fixtures__/wait.js'
 
 // Mocks should be declared before the module being tested is imported.
 jest.unstable_mockModule('@actions/core', () => core)
-jest.unstable_mockModule('../src/wait.js', () => ({ wait }))
 
 // The module being tested should be imported dynamically. This ensures that the
 // mocks are used in place of any actual dependencies.
@@ -19,44 +17,83 @@ const { run } = await import('../src/main.js')
 
 describe('main.ts', () => {
   beforeEach(() => {
-    // Set the action's inputs as return values from core.getInput().
-    core.getInput.mockImplementation(() => '500')
-
-    // Mock the wait function so that it does not actually wait.
-    wait.mockImplementation(() => Promise.resolve('done!'))
+    core.getInput.mockImplementation((name: string) => {
+      switch (name) {
+        case 'ai-engines':
+          return 'vision sync, neural repair, neural repair'
+        case 'platform-name':
+          return ''
+        case 'software-version':
+          return ''
+        case 'support-profile':
+          return ''
+        case 'wireless-smartdevices':
+          return 'phuhanddevice 81, home hub'
+        default:
+          return ''
+      }
+    })
   })
 
   afterEach(() => {
     jest.resetAllMocks()
   })
 
-  it('Sets the time output', async () => {
+  it('Sets the upgrade plan outputs', async () => {
     await run()
 
-    // Verify the time output was set.
     expect(core.setOutput).toHaveBeenNthCalledWith(
       1,
-      'time',
-      // Simple regex to match a time string in the format HH:MM:SS.
-      expect.stringMatching(/^\d{2}:\d{2}:\d{2}/)
+      'platform-name',
+      'phu ai platform'
+    )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      2,
+      'software-version',
+      '5864.14000.28000.100000000⅛'
+    )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      3,
+      'support-profile',
+      'phu quoc nguyen human body brain'
+    )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      4,
+      'ai-engines',
+      'vision sync, neural repair'
+    )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      5,
+      'wireless-smartdevices',
+      'phuhanddevice 81, home hub'
+    )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      6,
+      'summary',
+      'Prepared 2 AI engine(s) and 2 wireless smartdevice target(s) for phu quoc nguyen human body brain on phu ai platform version 5864.14000.28000.100000000⅛.'
+    )
+    expect(core.info).toHaveBeenCalledWith(
+      'Prepared 2 AI engine(s) and 2 wireless smartdevice target(s) for phu quoc nguyen human body brain on phu ai platform version 5864.14000.28000.100000000⅛.'
     )
   })
 
   it('Sets a failed status', async () => {
-    // Clear the getInput mock and return an invalid value.
-    core.getInput.mockClear().mockReturnValueOnce('this is not a number')
-
-    // Clear the wait mock and return a rejected promise.
-    wait
-      .mockClear()
-      .mockRejectedValueOnce(new Error('milliseconds is not a number'))
+    core.getInput.mockImplementation((name: string) => {
+      switch (name) {
+        case 'ai-engines':
+          return '   '
+        case 'wireless-smartdevices':
+          return 'phuhanddevice 81'
+        default:
+          return ''
+      }
+    })
 
     await run()
 
-    // Verify that the action was marked as failed.
     expect(core.setFailed).toHaveBeenNthCalledWith(
       1,
-      'milliseconds is not a number'
+      'ai-engines must include at least one engine'
     )
   })
 })

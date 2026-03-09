@@ -1,7 +1,7 @@
 {
   "name": "typescript-action",
-  "description": "GitHub Actions TypeScript template",
-  "version": "0.0.0",
+  "description": "Phu AI platform upgrade planning GitHub Action",
+  "version": "0.1.0",
   "author": "",
   "type": "module",
   "private": true,
