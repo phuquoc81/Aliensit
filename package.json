@@ -1,17 +1,17 @@
 {
-  "name": "typescript-action",
-  "description": "GitHub Actions TypeScript template",
-  "version": "0.0.0",
+  "name": "aliensit",
+  "description": "GitHub Action that generates grounded protection, wellbeing, and payment guidance",
+  "version": "0.1.0",
   "author": "",
   "type": "module",
   "private": true,
-  "homepage": "https://github.com/actions/typescript-action",
+  "homepage": "https://github.com/phuquoc81/Aliensit",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/phuquoc81/Aliensit.git"
   },
   "bugs": {
-    "url": "https://github.com/actions/typescript-action/issues"
+    "url": "https://github.com/phuquoc81/Aliensit/issues"
   },
   "keywords": [
     "actions"
