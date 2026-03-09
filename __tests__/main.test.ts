@@ -33,7 +33,20 @@ describe('main.ts', () => {
       wellbeing_plan:
         "Support phu's body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning.",
       money_plan:
-        'To make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
+        'For phu to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
+    })
+  })
+
+  it('Normalizes other subject values before building the plan', () => {
+    expect(buildGroundedPlan('  A-Team 42  ')).toEqual({
+      affirmation:
+        'A-Team 42 can move forward safely by combining practical security, healthy routines, and lawful payment tools.',
+      protection_plan:
+        'Protect every door A-Team 42 opens with strong locks, unique access codes, camera coverage, good lighting, backups, and trusted emergency contacts.',
+      wellbeing_plan:
+        "Support A-Team 42's body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning.",
+      money_plan:
+        'For A-Team 42 to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
     })
   })
 
@@ -58,7 +71,7 @@ describe('main.ts', () => {
     expect(core.setOutput).toHaveBeenNthCalledWith(
       4,
       'money_plan',
-      'To make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
+      'For phu to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
     )
   })
 
@@ -70,7 +83,22 @@ describe('main.ts', () => {
     expect(core.setOutput).toHaveBeenNthCalledWith(
       1,
       'affirmation',
-      expect.stringContaining('phu')
+      'phu can move forward safely by combining practical security, healthy routines, and lawful payment tools.'
+    )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      2,
+      'protection_plan',
+      'Protect every door phu opens with strong locks, unique access codes, camera coverage, good lighting, backups, and trusted emergency contacts.'
+    )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      3,
+      'wellbeing_plan',
+      "Support phu's body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning."
+    )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      4,
+      'money_plan',
+      'For phu to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
     )
   })
 
@@ -81,9 +109,6 @@ describe('main.ts', () => {
 
     await run()
 
-    expect(core.setFailed).toHaveBeenNthCalledWith(
-      1,
-      'unable to write output'
-    )
+    expect(core.setFailed).toHaveBeenNthCalledWith(1, 'unable to write output')
   })
 })

@@ -7,8 +7,17 @@ export interface GroundedPlan {
   money_plan: string
 }
 
+/**
+ * Normalizes the subject used in plan text so outputs stay readable.
+ *
+ * The original request uses "phu" as the central subject, so blank or
+ * whitespace-only values fall back to that default.
+ *
+ * @param subject Raw subject input from the action.
+ * @returns A trimmed subject with internal whitespace collapsed.
+ */
 function normalizeSubject(subject: string): string {
-  return subject.replace(/\s+/g, ' ').trim() || 'phu'
+  return subject.trim().replace(/\s+/g, ' ') || 'phu'
 }
 
 /**
@@ -24,8 +33,7 @@ export function buildGroundedPlan(subject: string): GroundedPlan {
     affirmation: `${normalizedSubject} can move forward safely by combining practical security, healthy routines, and lawful payment tools.`,
     protection_plan: `Protect every door ${normalizedSubject} opens with strong locks, unique access codes, camera coverage, good lighting, backups, and trusted emergency contacts.`,
     wellbeing_plan: `Support ${normalizedSubject}'s body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning.`,
-    money_plan:
-      'To make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
+    money_plan: `For ${normalizedSubject} to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.`
   }
 }
 

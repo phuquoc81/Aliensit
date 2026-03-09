@@ -1,5 +1,7 @@
 name: Aliensit
-description: Generate a grounded protection, wellbeing, and payment plan for a person or project
+description:
+  Generate a grounded protection, wellbeing, and payment plan for a person or
+  project
 author: phuquoc81
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
@@ -10,7 +12,9 @@ branding:
 # Define your inputs here.
 inputs:
   subject:
-    description: Person, team, or project that should receive the grounded plan
+    description:
+      Person, team, or project that should receive the grounded plan; defaults
+      to phu to match the original request when left blank
     required: false
     default: phu
 

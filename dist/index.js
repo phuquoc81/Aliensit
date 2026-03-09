@@ -27992,13 +27992,6 @@ function setFailed(message) {
     error(message);
 }
 /**
- * Writes debug message to user log
- * @param message debug message
- */
-function debug(message) {
-    issueCommand('debug', {}, message);
-}
-/**
  * Adds an error issue
  * @param message error issue message. Errors will be converted to string via toString()
  * @param properties optional properties to add to the annotation.
@@ -28006,21 +27999,41 @@ function debug(message) {
 function error(message, properties = {}) {
     issueCommand('error', toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
-
 /**
- * Waits for a number of milliseconds.
- *
- * @param milliseconds The number of milliseconds to wait.
- * @returns Resolves with 'done!' after the wait is over.
+ * Writes info to log with console.log.
+ * @param message info message
  */
-async function wait(milliseconds) {
-    return new Promise((resolve) => {
-        if (isNaN(milliseconds))
-            throw new Error('milliseconds is not a number');
-        setTimeout(() => resolve('done!'), milliseconds);
-    });
+function info(message) {
+    process.stdout.write(message + os.EOL);
 }
 
+/**
+ * Normalizes the subject used in plan text so outputs stay readable.
+ *
+ * The original request uses "phu" as the central subject, so blank or
+ * whitespace-only values fall back to that default.
+ *
+ * @param subject Raw subject input from the action.
+ * @returns A trimmed subject with internal whitespace collapsed.
+ */
+function normalizeSubject(subject) {
+    return subject.trim().replace(/\s+/g, ' ') || 'phu';
+}
+/**
+ * Builds a grounded support plan for the requested subject.
+ *
+ * @param subject The person or project the plan should support.
+ * @returns Practical security, wellbeing, and payment guidance.
+ */
+function buildGroundedPlan(subject) {
+    const normalizedSubject = normalizeSubject(subject);
+    return {
+        affirmation: `${normalizedSubject} can move forward safely by combining practical security, healthy routines, and lawful payment tools.`,
+        protection_plan: `Protect every door ${normalizedSubject} opens with strong locks, unique access codes, camera coverage, good lighting, backups, and trusted emergency contacts.`,
+        wellbeing_plan: `Support ${normalizedSubject}'s body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning.`,
+        money_plan: `For ${normalizedSubject} to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.`
+    };
+}
 /**
  * The main function for the action.
  *
@@ -28028,15 +28041,13 @@ async function wait(milliseconds) {
  */
 async function run() {
     try {
-        const ms = getInput('milliseconds');
-        // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-        debug(`Waiting ${ms} milliseconds ...`);
-        // Log the current timestamp, wait, then log the new timestamp
-        debug(new Date().toTimeString());
-        await wait(parseInt(ms, 10));
-        debug(new Date().toTimeString());
-        // Set outputs for other workflow steps to use
-        setOutput('time', new Date().toTimeString());
+        const subject = normalizeSubject(getInput('subject'));
+        const plan = buildGroundedPlan(subject);
+        info(`Creating a grounded support plan for ${subject}.`);
+        setOutput('affirmation', plan.affirmation);
+        setOutput('protection_plan', plan.protection_plan);
+        setOutput('wellbeing_plan', plan.wellbeing_plan);
+        setOutput('money_plan', plan.money_plan);
     }
     catch (error) {
         // Fail the workflow run if an error occurs
