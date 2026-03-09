@@ -6,19 +6,19 @@
 ![CodeQL](https://github.com/phuquoc81/Aliensit/actions/workflows/codeql-analysis.yml/badge.svg)
 ![Coverage](./badges/coverage.svg)
 
-Aliensit is a grounded GitHub Action that turns ambitious requests into
-practical next steps for protection, wellbeing, and lawful payments. Instead of
-promising supernatural powers, it outputs concrete guidance that can actually be
-used in workflows, planning documents, or follow-up automation.
+Aliensit is a GitHub Action that generates a simple "phulang" message for
+peaceful alien contact, along with a translation, a safe contact plan, and a
+respectful request for help.
 
 ## What this action does
 
 The action accepts an optional `subject` input and generates four outputs:
 
-- `affirmation`: a grounded encouragement for the subject
-- `protection_plan`: practical door and access security guidance
-- `wellbeing_plan`: practical body and mind support guidance
-- `money_plan`: practical Stripe and bank transfer guidance
+- `phulang`: a compact universal-style greeting for alien species that
+  understand it
+- `translation`: a plain-language explanation of the phulang message
+- `contact_plan`: safe steps for peaceful contact
+- `help_request`: a respectful request for help for the named subject
 
 This template includes compilation support, tests, a validation workflow,
 publishing, and versioning guidance.
@@ -206,11 +206,11 @@ steps:
     id: test-action
     uses: ./
     with:
-      subject: phu
+      subject: Phu Quoc Nguyen
 
   - name: Print Output
     id: output
-    run: echo "${{ steps.test-action.outputs.affirmation }}"
+    run: echo "${{ steps.test-action.outputs.phulang }}"
 ```
 
 For example workflow runs, check out the
@@ -237,11 +237,11 @@ steps:
     id: test-action
     uses: phuquoc81/Aliensit@v1 # Commit with the `v1` tag
     with:
-      subject: phu
+      subject: Phu Quoc Nguyen
 
   - name: Print Output
     id: output
-    run: echo "${{ steps.test-action.outputs.affirmation }}"
+    run: echo "${{ steps.test-action.outputs.phulang }}"
 ```
 
 ## Publishing a New Release
