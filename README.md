@@ -1,15 +1,26 @@
-# Create a GitHub Action Using TypeScript
+# Stripe Revenue Summary Action
 
-![Linter](https://github.com/actions/typescript-action/actions/workflows/linter.yml/badge.svg)
-![CI](https://github.com/actions/typescript-action/actions/workflows/ci.yml/badge.svg)
-![Check dist/](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml/badge.svg)
-![CodeQL](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml/badge.svg)
+![Linter](https://github.com/phuquoc81/Aliensit/actions/workflows/linter.yml/badge.svg)
+![CI](https://github.com/phuquoc81/Aliensit/actions/workflows/ci.yml/badge.svg)
+![Check dist/](https://github.com/phuquoc81/Aliensit/actions/workflows/check-dist.yml/badge.svg)
+![CodeQL](https://github.com/phuquoc81/Aliensit/actions/workflows/codeql-analysis.yml/badge.svg)
 ![Coverage](./badges/coverage.svg)
 
-Use this template to bootstrap the creation of a TypeScript action. :rocket:
+Generate a Stripe revenue summary from a JSON list of payments. :rocket:
 
-This template includes compilation support, tests, a validation workflow,
-publishing, and versioning guidance.
+The action calculates total revenue, counts payments, and emits a human-readable
+report that can be printed in workflow logs or consumed by later steps.
+
+## Inputs
+
+- `payments`: JSON array of numbers, numeric strings, or objects with an
+  `amount` field and optional `description`
+
+## Outputs
+
+- `total-revenue`: Total revenue formatted to two decimal places
+- `payment-count`: Number of payments included in the summary
+- `report`: Multi-line Stripe revenue report
 
 If you are new, there's also a simpler introduction in the
 [Hello world JavaScript action repository](https://github.com/actions/hello-world-javascript-action).
@@ -64,10 +75,8 @@ need to perform some initial setup steps before you can develop your action.
    ```bash
    $ npm test
 
-   PASS  ./index.test.js
-     ✓ throws invalid number (3ms)
-     ✓ wait 500 ms (504ms)
-     ✓ test runs (95ms)
+   PASS  ./__tests__/main.test.ts
+   PASS  ./__tests__/payments.test.ts
 
    ...
    ```
@@ -190,19 +199,21 @@ steps:
     id: checkout
     uses: actions/checkout@v4
 
-  - name: Test Local Action
+  - name: Generate Stripe revenue summary
     id: test-action
     uses: ./
     with:
-      milliseconds: 1000
+      payments: '[1.99, {"amount": 2.5, "description": "PHU AI Pro"}]'
 
-  - name: Print Output
+  - name: Print Outputs
     id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
+    run: |
+      echo "${{ steps.test-action.outputs.total-revenue }}"
+      echo "${{ steps.test-action.outputs.report }}"
 ```
 
 For example workflow runs, check out the
-[Actions tab](https://github.com/actions/typescript-action/actions)! :rocket:
+[Actions tab](https://github.com/phuquoc81/Aliensit/actions)! :rocket:
 
 ## Usage
 
@@ -221,15 +232,17 @@ steps:
     id: checkout
     uses: actions/checkout@v4
 
-  - name: Test Local Action
+  - name: Generate Stripe revenue summary
     id: test-action
-    uses: actions/typescript-action@v1 # Commit with the `v1` tag
+    uses: phuquoc81/Aliensit@v1 # Commit with the `v1` tag
     with:
-      milliseconds: 1000
+      payments: '[1.99, {"amount": 2.5, "description": "PHU AI Pro"}]'
 
-  - name: Print Output
+  - name: Print Outputs
     id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
+    run: |
+      echo "${{ steps.test-action.outputs.total-revenue }}"
+      echo "${{ steps.test-action.outputs.report }}"
 ```
 
 ## Publishing a New Release

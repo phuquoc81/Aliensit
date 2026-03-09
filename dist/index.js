@@ -27992,13 +27992,6 @@ function setFailed(message) {
     error(message);
 }
 /**
- * Writes debug message to user log
- * @param message debug message
- */
-function debug(message) {
-    issueCommand('debug', {}, message);
-}
-/**
  * Adds an error issue
  * @param message error issue message. Errors will be converted to string via toString()
  * @param properties optional properties to add to the annotation.
@@ -28006,19 +27999,60 @@ function debug(message) {
 function error(message, properties = {}) {
     issueCommand('error', toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
-
 /**
- * Waits for a number of milliseconds.
- *
- * @param milliseconds The number of milliseconds to wait.
- * @returns Resolves with 'done!' after the wait is over.
+ * Writes info to log with console.log.
+ * @param message info message
  */
-async function wait(milliseconds) {
-    return new Promise((resolve) => {
-        if (isNaN(milliseconds))
-            throw new Error('milliseconds is not a number');
-        setTimeout(() => resolve('done!'), milliseconds);
+function info(message) {
+    process.stdout.write(message + os.EOL);
+}
+
+function normalizePayment(payment, index) {
+    const amount = typeof payment === 'number' || typeof payment === 'string'
+        ? Number(payment)
+        : Number(payment.amount);
+    if (!Number.isFinite(amount)) {
+        throw new Error(`Payment at index ${index} is missing a valid amount`);
+    }
+    return {
+        amount,
+        description: typeof payment === 'object' && payment.description
+            ? payment.description
+            : undefined
+    };
+}
+function parsePayments(rawPayments) {
+    let parsedPayments;
+    try {
+        parsedPayments = JSON.parse(rawPayments);
+    }
+    catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown JSON parse error';
+        throw new Error(`payments must be valid JSON: ${message}`, {
+            cause: error
+        });
+    }
+    if (!Array.isArray(parsedPayments)) {
+        throw new Error('payments must be a JSON array');
+    }
+    return parsedPayments.map((payment, index) => normalizePayment(payment, index));
+}
+function calculateTotalRevenue(payments) {
+    return payments.reduce((sum, payment) => sum + payment.amount, 0);
+}
+function createRevenueReport(payments) {
+    const totalRevenue = calculateTotalRevenue(payments);
+    const lines = ['Stripe Revenue', `Total Revenue: $${totalRevenue.toFixed(2)}`];
+    if (payments.length === 0) {
+        lines.push('Payments:', '- No payments found.');
+        return lines.join('\n');
+    }
+    lines.push('Payments:');
+    payments.forEach((payment, index) => {
+        const suffix = payment.description ? ` — ${payment.description}` : '';
+        lines.push(`- Payment ${index + 1}: $${payment.amount.toFixed(2)}${suffix}`);
     });
+    return lines.join('\n');
 }
 
 /**
@@ -28028,15 +28062,14 @@ async function wait(milliseconds) {
  */
 async function run() {
     try {
-        const ms = getInput('milliseconds');
-        // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-        debug(`Waiting ${ms} milliseconds ...`);
-        // Log the current timestamp, wait, then log the new timestamp
-        debug(new Date().toTimeString());
-        await wait(parseInt(ms, 10));
-        debug(new Date().toTimeString());
-        // Set outputs for other workflow steps to use
-        setOutput('time', new Date().toTimeString());
+        const paymentsInput = getInput('payments');
+        const payments = parsePayments(paymentsInput);
+        const totalRevenue = calculateTotalRevenue(payments);
+        const report = createRevenueReport(payments);
+        info(report);
+        setOutput('total-revenue', totalRevenue.toFixed(2));
+        setOutput('payment-count', payments.length.toString());
+        setOutput('report', report);
     }
     catch (error) {
         // Fail the workflow run if an error occurs
