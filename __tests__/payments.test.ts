@@ -3,10 +3,12 @@ import { createRevenueReport, parsePayments } from '../src/payments.js'
 describe('payments.ts', () => {
   it('parses numeric and object payments', () => {
     expect(
-      parsePayments('[1.99, {"amount": "2.50", "description": "PHU AI Pro"}]')
+      parsePayments(
+        '[1.99, {"amount": "2.50", "description": "Premium subscription"}]'
+      )
     ).toEqual([
       { amount: 1.99, description: undefined },
-      { amount: 2.5, description: 'PHU AI Pro' }
+      { amount: 2.5, description: 'Premium subscription' }
     ])
   })
 
@@ -24,14 +26,14 @@ describe('payments.ts', () => {
     expect(
       createRevenueReport([
         { amount: 1.99 },
-        { amount: 3, description: 'New PHU AI payment received!' }
+        { amount: 3, description: 'Premium plan' }
       ])
     ).toBe(
       'Stripe Revenue\n' +
         'Total Revenue: $4.99\n' +
         'Payments:\n' +
         '- Payment 1: $1.99\n' +
-        '- Payment 2: $3.00 — New PHU AI payment received!'
+        '- Payment 2: $3.00 — Premium plan'
     )
   })
 })

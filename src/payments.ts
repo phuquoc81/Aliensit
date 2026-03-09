@@ -53,11 +53,12 @@ export function parsePayments(rawPayments: string): Payment[] {
   )
 }
 
+export function calculateTotalRevenue(payments: Payment[]): number {
+  return payments.reduce((sum, payment) => sum + payment.amount, 0)
+}
+
 export function createRevenueReport(payments: Payment[]): string {
-  const totalRevenue = payments.reduce(
-    (sum, payment) => sum + payment.amount,
-    0
-  )
+  const totalRevenue = calculateTotalRevenue(payments)
   const lines = ['Stripe Revenue', `Total Revenue: $${totalRevenue.toFixed(2)}`]
 
   if (payments.length === 0) {

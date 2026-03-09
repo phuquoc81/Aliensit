@@ -28037,8 +28037,11 @@ function parsePayments(rawPayments) {
     }
     return parsedPayments.map((payment, index) => normalizePayment(payment, index));
 }
+function calculateTotalRevenue(payments) {
+    return payments.reduce((sum, payment) => sum + payment.amount, 0);
+}
 function createRevenueReport(payments) {
-    const totalRevenue = payments.reduce((sum, payment) => sum + payment.amount, 0);
+    const totalRevenue = calculateTotalRevenue(payments);
     const lines = ['Stripe Revenue', `Total Revenue: $${totalRevenue.toFixed(2)}`];
     if (payments.length === 0) {
         lines.push('Payments:', '- No payments found.');
@@ -28061,7 +28064,7 @@ async function run() {
     try {
         const paymentsInput = getInput('payments');
         const payments = parsePayments(paymentsInput);
-        const totalRevenue = payments.reduce((sum, payment) => sum + payment.amount, 0);
+        const totalRevenue = calculateTotalRevenue(payments);
         const report = createRevenueReport(payments);
         info(report);
         setOutput('total-revenue', totalRevenue.toFixed(2));

@@ -1,5 +1,9 @@
 import * as core from '@actions/core'
-import { createRevenueReport, parsePayments } from './payments.js'
+import {
+  calculateTotalRevenue,
+  createRevenueReport,
+  parsePayments
+} from './payments.js'
 
 /**
  * The main function for the action.
@@ -10,10 +14,7 @@ export async function run(): Promise<void> {
   try {
     const paymentsInput = core.getInput('payments')
     const payments = parsePayments(paymentsInput)
-    const totalRevenue = payments.reduce(
-      (sum, payment) => sum + payment.amount,
-      0
-    )
+    const totalRevenue = calculateTotalRevenue(payments)
     const report = createRevenueReport(payments)
 
     core.info(report)
