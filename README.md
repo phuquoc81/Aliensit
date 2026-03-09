@@ -8,7 +8,9 @@
 
 Aliensit is a GitHub Action that generates a simple "phulang" message for
 peaceful alien contact, along with a translation, a safe contact plan, and a
-respectful request for help.
+respectful request for help. In this project, "phulang" means a compact,
+universal-style contact phrase built from simple peaceful ideas that many alien
+species could understand if they recognize the signal.
 
 ## What this action does
 

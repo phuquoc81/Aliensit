@@ -10,8 +10,8 @@ export interface AlienContactPlan {
 /**
  * Normalizes the subject used in plan text so outputs stay readable.
  *
- * The current request centers on Phu Quoc Nguyen, so blank or whitespace-only
- * values fall back to that default.
+ * Blank or whitespace-only values fall back to Phu Quoc Nguyen so the action
+ * always produces a complete contact message.
  *
  * @param subject Raw subject input from the action.
  * @returns A trimmed subject with internal whitespace collapsed.
@@ -22,6 +22,9 @@ function normalizeSubject(subject: string): string {
 
 /**
  * Builds a simple alien-contact plan for the requested subject.
+ *
+ * In this action, "phulang" is a compact universal-style contact phrase that
+ * favors simple, peaceful concepts over complex grammar.
  *
  * @param subject The person who should be named in the message.
  * @returns A phulang message, translation, contact guidance, and help request.
