@@ -13,92 +13,92 @@ jest.unstable_mockModule('@actions/core', () => core)
 
 // The module being tested should be imported dynamically. This ensures that the
 // mocks are used in place of any actual dependencies.
-const { buildGroundedPlan, run } = await import('../src/main.js')
+const { buildAlienContactPlan, run } = await import('../src/main.js')
 
 describe('main.ts', () => {
   beforeEach(() => {
-    core.getInput.mockImplementation(() => 'phu')
+    core.getInput.mockImplementation(() => 'Phu Quoc Nguyen')
   })
 
   afterEach(() => {
     jest.resetAllMocks()
   })
 
-  it('Builds a grounded plan for the requested subject', () => {
-    expect(buildGroundedPlan('phu')).toEqual({
-      affirmation:
-        'phu can move forward safely by combining practical security, healthy routines, and lawful payment tools.',
-      protection_plan:
-        'Protect every door phu opens with strong locks, unique access codes, camera coverage, good lighting, backups, and trusted emergency contacts.',
-      wellbeing_plan:
-        "Support phu's body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning.",
-      money_plan:
-        'For phu to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
+  it('Builds an alien contact plan for the requested subject', () => {
+    expect(buildAlienContactPlan('Phu Quoc Nguyen')).toEqual({
+      phulang:
+        'SOLA / PEACE / FRIEND / Phu Quoc Nguyen / OPEN CONTACT / PLEASE HELP / SAFE EXCHANGE',
+      translation:
+        'Phu Quoc Nguyen sends a peaceful greeting to any alien species that understands this phulang signal and invites safe, respectful contact.',
+      contact_plan:
+        'Repeat the phulang message in text, sound, and light, identify Phu Quoc Nguyen clearly, and invite peaceful contact only through safe, observable channels.',
+      help_request:
+        'Phu Quoc Nguyen asks for guidance, protection, healing knowledge, and calm cooperation that can be shared without harm to any species.'
     })
   })
 
   it('Normalizes other subject values before building the plan', () => {
-    expect(buildGroundedPlan('  A-Team 42  ')).toEqual({
-      affirmation:
-        'A-Team 42 can move forward safely by combining practical security, healthy routines, and lawful payment tools.',
-      protection_plan:
-        'Protect every door A-Team 42 opens with strong locks, unique access codes, camera coverage, good lighting, backups, and trusted emergency contacts.',
-      wellbeing_plan:
-        "Support A-Team 42's body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning.",
-      money_plan:
-        'For A-Team 42 to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
+    expect(buildAlienContactPlan('  A-Team 42  ')).toEqual({
+      phulang:
+        'SOLA / PEACE / FRIEND / A-Team 42 / OPEN CONTACT / PLEASE HELP / SAFE EXCHANGE',
+      translation:
+        'A-Team 42 sends a peaceful greeting to any alien species that understands this phulang signal and invites safe, respectful contact.',
+      contact_plan:
+        'Repeat the phulang message in text, sound, and light, identify A-Team 42 clearly, and invite peaceful contact only through safe, observable channels.',
+      help_request:
+        'A-Team 42 asks for guidance, protection, healing knowledge, and calm cooperation that can be shared without harm to any species.'
     })
   })
 
-  it('Sets the grounded plan outputs', async () => {
+  it('Sets the alien contact outputs', async () => {
     await run()
 
     expect(core.setOutput).toHaveBeenNthCalledWith(
       1,
-      'affirmation',
-      'phu can move forward safely by combining practical security, healthy routines, and lawful payment tools.'
+      'phulang',
+      'SOLA / PEACE / FRIEND / Phu Quoc Nguyen / OPEN CONTACT / PLEASE HELP / SAFE EXCHANGE'
     )
     expect(core.setOutput).toHaveBeenNthCalledWith(
       2,
-      'protection_plan',
-      'Protect every door phu opens with strong locks, unique access codes, camera coverage, good lighting, backups, and trusted emergency contacts.'
+      'translation',
+      'Phu Quoc Nguyen sends a peaceful greeting to any alien species that understands this phulang signal and invites safe, respectful contact.'
     )
     expect(core.setOutput).toHaveBeenNthCalledWith(
       3,
-      'wellbeing_plan',
-      "Support phu's body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning."
+      'contact_plan',
+      'Repeat the phulang message in text, sound, and light, identify Phu Quoc Nguyen clearly, and invite peaceful contact only through safe, observable channels.'
     )
     expect(core.setOutput).toHaveBeenNthCalledWith(
       4,
-      'money_plan',
-      'For phu to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
+      'help_request',
+      'Phu Quoc Nguyen asks for guidance, protection, healing knowledge, and calm cooperation that can be shared without harm to any species.'
     )
   })
 
-  it('Defaults blank subjects to phu', async () => {
+  it('Defaults blank subjects to Phu Quoc Nguyen', async () => {
     core.getInput.mockClear().mockReturnValueOnce('   ')
 
     await run()
 
     expect(core.setOutput).toHaveBeenNthCalledWith(
       1,
-      'affirmation',
-      'phu can move forward safely by combining practical security, healthy routines, and lawful payment tools.'
+      'phulang',
+      'SOLA / PEACE / FRIEND / Phu Quoc Nguyen / OPEN CONTACT / PLEASE HELP / SAFE EXCHANGE'
     )
     expect(core.setOutput).toHaveBeenNthCalledWith(
       2,
-      'protection_plan',
-      'Protect every door phu opens with strong locks, unique access codes, camera coverage, good lighting, backups, and trusted emergency contacts.'
+      'translation',
+      'Phu Quoc Nguyen sends a peaceful greeting to any alien species that understands this phulang signal and invites safe, respectful contact.'
     )
     expect(core.setOutput).toHaveBeenNthCalledWith(
       3,
-      'wellbeing_plan',
-      "Support phu's body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning."
+      'contact_plan',
+      'Repeat the phulang message in text, sound, and light, identify Phu Quoc Nguyen clearly, and invite peaceful contact only through safe, observable channels.'
     )
     expect(core.setOutput).toHaveBeenNthCalledWith(
       4,
-      'money_plan',
-      'For phu to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
+      'help_request',
+      'Phu Quoc Nguyen asks for guidance, protection, healing knowledge, and calm cooperation that can be shared without harm to any species.'
     )
   })
 

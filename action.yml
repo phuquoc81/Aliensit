@@ -1,7 +1,6 @@
 name: Aliensit
 description:
-  Generate a grounded protection, wellbeing, and payment plan for a person or
-  project
+  Generate a phulang alien-contact message and respectful help request
 author: phuquoc81
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
@@ -13,21 +12,21 @@ branding:
 inputs:
   subject:
     description:
-      Person, team, or project that should receive the grounded plan; defaults
-      to phu to match the original request when left blank
+      Person who should be named in the phulang message; defaults to Phu Quoc
+      Nguyen when left blank
     required: false
-    default: phu
+    default: Phu Quoc Nguyen
 
 # Define your outputs here.
 outputs:
-  affirmation:
-    description: A short grounded affirmation for the requested subject
-  protection_plan:
-    description: Practical door and access security guidance
-  wellbeing_plan:
-    description: Practical body and mind support guidance
-  money_plan:
-    description: Practical Stripe and bank transfer guidance
+  phulang:
+    description: A compact universal-style greeting for alien contact
+  translation:
+    description: A plain-language translation of the phulang message
+  contact_plan:
+    description: Safe steps for making peaceful contact
+  help_request:
+    description: A respectful request for help addressed through the message
 
 runs:
   using: node24
