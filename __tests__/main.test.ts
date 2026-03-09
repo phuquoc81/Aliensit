@@ -7,56 +7,108 @@
  */
 import { jest } from '@jest/globals'
 import * as core from '../__fixtures__/core.js'
-import { wait } from '../__fixtures__/wait.js'
 
 // Mocks should be declared before the module being tested is imported.
 jest.unstable_mockModule('@actions/core', () => core)
-jest.unstable_mockModule('../src/wait.js', () => ({ wait }))
 
 // The module being tested should be imported dynamically. This ensures that the
 // mocks are used in place of any actual dependencies.
-const { run } = await import('../src/main.js')
+const { buildGroundedPlan, run } = await import('../src/main.js')
 
 describe('main.ts', () => {
   beforeEach(() => {
-    // Set the action's inputs as return values from core.getInput().
-    core.getInput.mockImplementation(() => '500')
-
-    // Mock the wait function so that it does not actually wait.
-    wait.mockImplementation(() => Promise.resolve('done!'))
+    core.getInput.mockImplementation(() => 'phu')
   })
 
   afterEach(() => {
     jest.resetAllMocks()
   })
 
-  it('Sets the time output', async () => {
+  it('Builds a grounded plan for the requested subject', () => {
+    expect(buildGroundedPlan('phu')).toEqual({
+      affirmation:
+        'phu can move forward safely by combining practical security, healthy routines, and lawful payment tools.',
+      protection_plan:
+        'Protect every door phu opens with strong locks, unique access codes, camera coverage, good lighting, backups, and trusted emergency contacts.',
+      wellbeing_plan:
+        "Support phu's body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning.",
+      money_plan:
+        'For phu to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
+    })
+  })
+
+  it('Normalizes other subject values before building the plan', () => {
+    expect(buildGroundedPlan('  A-Team 42  ')).toEqual({
+      affirmation:
+        'A-Team 42 can move forward safely by combining practical security, healthy routines, and lawful payment tools.',
+      protection_plan:
+        'Protect every door A-Team 42 opens with strong locks, unique access codes, camera coverage, good lighting, backups, and trusted emergency contacts.',
+      wellbeing_plan:
+        "Support A-Team 42's body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning.",
+      money_plan:
+        'For A-Team 42 to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
+    })
+  })
+
+  it('Sets the grounded plan outputs', async () => {
     await run()
 
-    // Verify the time output was set.
     expect(core.setOutput).toHaveBeenNthCalledWith(
       1,
-      'time',
-      // Simple regex to match a time string in the format HH:MM:SS.
-      expect.stringMatching(/^\d{2}:\d{2}:\d{2}/)
+      'affirmation',
+      'phu can move forward safely by combining practical security, healthy routines, and lawful payment tools.'
+    )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      2,
+      'protection_plan',
+      'Protect every door phu opens with strong locks, unique access codes, camera coverage, good lighting, backups, and trusted emergency contacts.'
+    )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      3,
+      'wellbeing_plan',
+      "Support phu's body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning."
+    )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      4,
+      'money_plan',
+      'For phu to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
     )
   })
 
-  it('Sets a failed status', async () => {
-    // Clear the getInput mock and return an invalid value.
-    core.getInput.mockClear().mockReturnValueOnce('this is not a number')
-
-    // Clear the wait mock and return a rejected promise.
-    wait
-      .mockClear()
-      .mockRejectedValueOnce(new Error('milliseconds is not a number'))
+  it('Defaults blank subjects to phu', async () => {
+    core.getInput.mockClear().mockReturnValueOnce('   ')
 
     await run()
 
-    // Verify that the action was marked as failed.
-    expect(core.setFailed).toHaveBeenNthCalledWith(
+    expect(core.setOutput).toHaveBeenNthCalledWith(
       1,
-      'milliseconds is not a number'
+      'affirmation',
+      'phu can move forward safely by combining practical security, healthy routines, and lawful payment tools.'
     )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      2,
+      'protection_plan',
+      'Protect every door phu opens with strong locks, unique access codes, camera coverage, good lighting, backups, and trusted emergency contacts.'
+    )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      3,
+      'wellbeing_plan',
+      "Support phu's body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning."
+    )
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      4,
+      'money_plan',
+      'For phu to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.'
+    )
+  })
+
+  it('Sets a failed status when an output cannot be written', async () => {
+    core.setOutput.mockImplementationOnce(() => {
+      throw new Error('unable to write output')
+    })
+
+    await run()
+
+    expect(core.setFailed).toHaveBeenNthCalledWith(1, 'unable to write output')
   })
 })

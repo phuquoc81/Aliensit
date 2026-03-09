@@ -1,12 +1,24 @@
-# Create a GitHub Action Using TypeScript
+# Aliensit
 
-![Linter](https://github.com/actions/typescript-action/actions/workflows/linter.yml/badge.svg)
-![CI](https://github.com/actions/typescript-action/actions/workflows/ci.yml/badge.svg)
-![Check dist/](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml/badge.svg)
-![CodeQL](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml/badge.svg)
+![Linter](https://github.com/phuquoc81/Aliensit/actions/workflows/linter.yml/badge.svg)
+![CI](https://github.com/phuquoc81/Aliensit/actions/workflows/ci.yml/badge.svg)
+![Check dist/](https://github.com/phuquoc81/Aliensit/actions/workflows/check-dist.yml/badge.svg)
+![CodeQL](https://github.com/phuquoc81/Aliensit/actions/workflows/codeql-analysis.yml/badge.svg)
 ![Coverage](./badges/coverage.svg)
 
-Use this template to bootstrap the creation of a TypeScript action. :rocket:
+Aliensit is a grounded GitHub Action that turns ambitious requests into
+practical next steps for protection, wellbeing, and lawful payments. Instead of
+promising supernatural powers, it outputs concrete guidance that can actually be
+used in workflows, planning documents, or follow-up automation.
+
+## What this action does
+
+The action accepts an optional `subject` input and generates four outputs:
+
+- `affirmation`: a grounded encouragement for the subject
+- `protection_plan`: practical door and access security guidance
+- `wellbeing_plan`: practical body and mind support guidance
+- `money_plan`: practical Stripe and bank transfer guidance
 
 This template includes compilation support, tests, a validation workflow,
 publishing, and versioning guidance.
@@ -194,11 +206,11 @@ steps:
     id: test-action
     uses: ./
     with:
-      milliseconds: 1000
+      subject: phu
 
   - name: Print Output
     id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
+    run: echo "${{ steps.test-action.outputs.affirmation }}"
 ```
 
 For example workflow runs, check out the
@@ -223,13 +235,13 @@ steps:
 
   - name: Test Local Action
     id: test-action
-    uses: actions/typescript-action@v1 # Commit with the `v1` tag
+    uses: phuquoc81/Aliensit@v1 # Commit with the `v1` tag
     with:
-      milliseconds: 1000
+      subject: phu
 
   - name: Print Output
     id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
+    run: echo "${{ steps.test-action.outputs.affirmation }}"
 ```
 
 ## Publishing a New Release
