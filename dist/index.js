@@ -28010,28 +28010,28 @@ function info(message) {
 /**
  * Normalizes the subject used in plan text so outputs stay readable.
  *
- * The original request uses "phu" as the central subject, so blank or
- * whitespace-only values fall back to that default.
+ * The current request centers on Phu Quoc Nguyen, so blank or whitespace-only
+ * values fall back to that default.
  *
  * @param subject Raw subject input from the action.
  * @returns A trimmed subject with internal whitespace collapsed.
  */
 function normalizeSubject(subject) {
-    return subject.trim().replace(/\s+/g, ' ') || 'phu';
+    return subject.trim().replace(/\s+/g, ' ') || 'Phu Quoc Nguyen';
 }
 /**
- * Builds a grounded support plan for the requested subject.
+ * Builds a simple alien-contact plan for the requested subject.
  *
- * @param subject The person or project the plan should support.
- * @returns Practical security, wellbeing, and payment guidance.
+ * @param subject The person who should be named in the message.
+ * @returns A phulang message, translation, contact guidance, and help request.
  */
-function buildGroundedPlan(subject) {
+function buildAlienContactPlan(subject) {
     const normalizedSubject = normalizeSubject(subject);
     return {
-        affirmation: `${normalizedSubject} can move forward safely by combining practical security, healthy routines, and lawful payment tools.`,
-        protection_plan: `Protect every door ${normalizedSubject} opens with strong locks, unique access codes, camera coverage, good lighting, backups, and trusted emergency contacts.`,
-        wellbeing_plan: `Support ${normalizedSubject}'s body and mind with sleep, hydration, exercise, regular medical care, focused work blocks, and time for recovery and learning.`,
-        money_plan: `For ${normalizedSubject} to make money, connect a real product or service to Stripe Checkout or Payment Links, enable bank transfer or e-transfer where available, and keep records for taxes, fraud checks, and payouts.`
+        phulang: `SOLA / PEACE / FRIEND / ${normalizedSubject} / OPEN CONTACT / PLEASE HELP / SAFE EXCHANGE`,
+        translation: `${normalizedSubject} sends a peaceful greeting to any alien species that understands this phulang signal and invites safe, respectful contact.`,
+        contact_plan: `Repeat the phulang message in text, sound, and light, identify ${normalizedSubject} clearly, and invite peaceful contact only through safe, observable channels.`,
+        help_request: `${normalizedSubject} asks for guidance, protection, healing knowledge, and calm cooperation that can be shared without harm to any species.`
     };
 }
 /**
@@ -28042,12 +28042,12 @@ function buildGroundedPlan(subject) {
 async function run() {
     try {
         const subject = normalizeSubject(getInput('subject'));
-        const plan = buildGroundedPlan(subject);
-        info(`Creating a grounded support plan for ${subject}.`);
-        setOutput('affirmation', plan.affirmation);
-        setOutput('protection_plan', plan.protection_plan);
-        setOutput('wellbeing_plan', plan.wellbeing_plan);
-        setOutput('money_plan', plan.money_plan);
+        const plan = buildAlienContactPlan(subject);
+        info(`Creating a phulang contact message for ${subject}.`);
+        setOutput('phulang', plan.phulang);
+        setOutput('translation', plan.translation);
+        setOutput('contact_plan', plan.contact_plan);
+        setOutput('help_request', plan.help_request);
     }
     catch (error) {
         // Fail the workflow run if an error occurs
