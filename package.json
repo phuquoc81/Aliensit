@@ -1,7 +1,7 @@
 {
   "name": "aliensit",
   "description": "GitHub Action that generates grounded protection, wellbeing, and payment guidance",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "",
   "type": "module",
   "private": true,

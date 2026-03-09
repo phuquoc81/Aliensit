@@ -1,6 +1,6 @@
 # Aliensit
 
-![Linter](https://github.com/phuquoc81/Aliensit/actions/workflows/linter.yml/badge.svg)
+<a href="https://github.com/phuquoc81/Aliensit/actions/workflows/linter.yml"><img src="https://github.com/phuquoc81/Aliensit/actions/workflows/linter.yml/badge.svg"></a>
 <a href="https://github.com/phuquoc81/Aliensit/actions/workflows/ci.yml"><img src="https://github.com/phuquoc81/Aliensit/actions/workflows/ci.yml/badge.svg"></a>
 ![Check dist/](https://github.com/phuquoc81/Aliensit/actions/workflows/check-dist.yml/badge.svg)
 ![CodeQL](https://github.com/phuquoc81/Aliensit/actions/workflows/codeql-analysis.yml/badge.svg)
